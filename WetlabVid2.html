@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>360&deg; VR Tour</title>
+    <meta name="description" content="360&deg; VR Tour - A-Frame" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+  </head>
+  
+  
+  <body>
+    <a-scene background="color:#FFF">
+        <a-assets>
+<!--when creating a new video page, must change/add
+    - a video source to video entity "source"
+    - adjust rotation of "crest" to also align with video
+    - adjust rotation of videosphere entity "screen" so user is facing desired location and video is level
+    - an image to act as the screen before the video is played (otherwise it will just remain black)
+    - a marker on the main page to access it
+-->
+        <video id="source" src="assets/videos/wet2.mp4"></video>
+        <img id="preplayimg" src="assets/wetlab2.jpg">
+        <img id="instructions" src="assets/startvid.png">
+        <img id="shucrest" src="assets/SHU_crest.png">
+        
+        <script>
+          AFRAME.registerComponent("playvideo", {
+            init: function() {
+              var el = this.el;
+              var vid = document.getElementById("source");
+              var screen = document.getElementById("preplay");
+              var instruction = document.getElementById("instructionbox")
+              
+              var initialDelay = 300;
+              var delay = initialDelay;
+              
+              //add event listeners here
+              el.addEventListener("click", function() {
+                screen.emit("click");
+                instruction.emit("click");
+                if(vid.paused){
+                  setTimeout(() => {
+                  vid.play();
+                  delay = 0;
+                  }, delay);
+                } 
+                else if (!vid.paused)
+                {
+                  vid.pause();
+                }
+              });
+            }
+          });          
+        </script>
+        
+        
+</a-assets>
+      <!-- change rotation here-->
+      <a-videosphere id="screen" src="#source" crossorigin="anonymous" webkit-playsinline playsinline rotation=".9 90 0"></a-videosphere>
+      <a-sky id="preplay" 
+             radius="20" 
+             src="#preplayimg" 
+             rotation="0 15.58 0" 
+             animation__fade="property: material.opacity; to: 0; dur: 200; startEvents: click">
+      </a-sky>
+      <a-image id= "instructionbox" 
+                 src="#instructions" 
+                 rotation="0 0 0" 
+                 position="0 0 -8" 
+                 scale="8 4 1"
+                 animation__fade="property: material.opacity; to: 0; dur: 100; startEvents: click; delay:200;"
+                 animation__drop="property: position; to:0 -3 -8; dur: 100; delay:200; startEvents: click;">
+      </a-image>
+      <a-circle 
+        id="circle"
+        color="#A70034"
+        position="0 -9.5 0"
+        rotation="-90 0 0"
+        scale="3 3 3"
+      >
+        <!-- change rotation here-->
+        <a-image
+          id="crest"
+          src="#shucrest"
+          position="0 0 .3"
+          rotation="0 0 -4"
+          scale="1.8 1.8 1.8"
+        ></a-image>
+      </a-circle>
+      
+      <!-- Camera + cursor. -->
+      <a-entity id="rig" position="0 -1.6 0" rotation="0 0 0" >
+        <a-entity id="camera" camera look-controls cursor="rayOrigin: mouse" ></a-entity><!-- y-position set to -1.6 to counteract the default height of the user at 1.6 meters, which was causing some image distortion  -->
+        <a-camera wasd-controls="enabled:false">
+          <a-entity 
+            id = "cursor"
+            animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: .15 .15 .15 ; to: .075 .075 .075"
+            animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: .075 .075 .075"
+            cursor="fuse: false; fuse-timeout:500;"
+            material="color: #eee; shader: flat"
+            position="0 0 -8.25"
+            geometry="primitive: ring"
+            scale=".075 .075 .075"
+            playvideo
+          ></a-entity>
+        </a-camera>
+      </a-entity>
+      
+      
+    </a-scene>
+  </body>
+</html>

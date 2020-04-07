@@ -1,0 +1,2429 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>360&deg; VR Tour</title>
+    <meta
+      name="description"
+      content="360&deg; Sacred Heart Engineering Department VR Tour"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@5/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-layout-component@5.3.0/dist/aframe-layout-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-template-component@3.2.1/dist/aframe-template-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+  </head>
+
+  <body>
+    <a-scene>
+      <a-assets>
+        <img id="shuCrest" crossorigin="anonymous" src="assets/SHU_crest.png" />
+        <img id="moveArrow" crossorigin="anonymous" src="assets/arrow.png" />
+        <img id="ping" crossorigin="anonymous" src="assets/ping.png" />
+        <img id="overlay" crossorigin="anonymous" src="assets/TourOverlay.png"/>
+
+        <img id="front" crossorigin="anonymous" src="assets/frontB.jpg" /><!-- lab 1-2, droneTest -->
+        
+        <!-- COMMENTS TELL WHAT ROOMS ARE CONNECTED TO THAT ROOM -->
+        <img id="hall1" crossorigin="anonymous" src="assets/hall1.jpg" /><!-- hall 2, -->
+        <img id="hall2" crossorigin="anonymous" src="assets/hall2.jpg" /><!-- hall 1, hall 3-->
+        <img id="hall3" crossorigin="anonymous" src="assets/hall3.jpg" /><!-- hall 2, hall 4-->
+        <img id="hall4" crossorigin="anonymous" src="assets/hall4.jpg" /><!-- hall 3, hall 5-->
+        <img id="hall5" crossorigin="anonymous" src="assets/hall5.jpg" /><!-- hall 4, electronics lab, shop 1-->
+        
+        <img id="studio1" crossorigin="anonymous" src="assets/studio1.jpg" /><!-- lab 1-2, meeting 1, meeting 2-->
+        <img id="studio2" crossorigin="anonymous" src="assets/studio2.jpg" /><!-- lab 1-4, front, meeting 2?-->
+        <img id="studio3" crossorigin="anonymous" src="assets/studio3.jpg" /><!-- lab 1-1, lab 1-4, sidelab 1-->
+        <img id="studio4" crossorigin="anonymous" src="assets/studio4.jpg" /><!-- hall 1, lab 1-2 -->
+
+        <img id="shop1" crossorigin="anonymous" src="assets/shop1.jpg" /><!-- shop 2, shop 3, hall 5 -->
+        <img id="shop2" crossorigin="anonymous" src="assets/shop2.jpg" /><!-- shop 1-->
+        <img id="shop3" crossorigin="anonymous" src="assets/shop3.jpg" /><!-- shop 1-->
+
+        <img id="storage" crossorigin="anonymous" src="assets/storage.jpg" /><!-- hall 1 -->
+
+        <img id="printlab1" crossorigin="anonymous" src="assets/printinglab1.jpg" /><!-- hall 1?, print lab 2-->
+        <img id="printlab2" crossorigin="anonymous" src="assets/printinglab2.jpg" /><!-- hall 2?, print lab 1-->
+
+        <img id="mediaroom" crossorigin="anonymous" src="assets/mediaroom.jpg" /><!--hall 2 -->
+        <img id="textilelab" crossorigin="anonymous" src="assets/textilelab.jpg" /><!-- hall 3-->
+        <img id="electronicslab" crossorigin="anonymous" src="assets/electronicslab.jpg"/><!-- hall 5 -->
+
+        <img id="meeting1" crossorigin="anonymous" src="assets/meeting1.jpg" /><!-- lab 1-1, -->
+        <img id="meeting2" crossorigin="anonymous" src="assets/meeting2.jpg" /><!-- lab 1-1, -->
+
+        <img id="wetlab1" crossorigin="anonymous" src="assets/wetlab1.jpg" /><!-- lab 2-2, sidelab 1 --> 
+        <img id="wetlab2" crossorigin="anonymous" src="assets/wetlab2.jpg" /><!-- lab 2-1 -->
+
+        <img id="sidelab1" crossorigin="anonymous" src="assets/sidelab1.jpg" /><!-- lab 1- , wetlab1, sidelab2 -->
+        <img id="sidelab2" crossorigin="anonymous" src="assets/sidelab2.jpg" /><!-- sidelab 1 --> 
+
+          
+        <img id="dronein" crossorigin="anonymous" src="assets/AVRS_inside.JPG"/><!-- droneout -->
+        <img id="droneout1" crossorigin="anonymous" src="assets/AVRS_outside.JPG"/><!-- front, avrs inside -->
+        <img id="droneout2" crossorigin="anonymous" src="assets/AVRS_outside2.JPG"/><!-- not used -->
+        
+        <img id="intro" crossorigin="anonymous" src="assets/intro.png">
+        <img id="startbtn" crossorigin="anonymous" src="assets/start.png">
+        <!-- <img id="" crossorigin="anonymous" src=""/><!-- -->
+        
+        <!-- start room setup scripts -->
+<!-- 
+each room needs:
+- a dismantling script
+  - moves all movement hotspots to default position (0, -15, 0)
+- an assembling script
+  - places all hotspots that belong in that specific room
+- a to-roomname icon that has all necessary components on it, which include
+  - disassembly components for all rooms that lead to that room
+  - assembly component that sets up that room
+  - roomswitch
+  - faderoommarkers
+- added to roomswitch switchcase (diff == new photograph's rotation relative to the previous rotation)
+- added to faderoommarkers
+
+  link.setAttribute("position", { x: , y: , z: });
+  link.setAttribute("rotation", { x: -90, y: });
+
+todo: 
+    breakout room     : rotation ( add if sent a picture )
+
+    add video markers for: 
+      droneout-vid
+      printlab2-vid
+      mediaroom-vid
+      electronicslab-vid1
+      electronicslab-vid2
+      studio-vid (2?)
+      textilelab-vid
+      sidelab2-vid
+      wetlab1-vid
+      wetlab2-vid
+      
+      (breakout)
+                
+-->
+        <script>
+          //constants to be used
+          var fadedelay = 300;
+          var defaultPos = { x: 0, y: -15, z: 0 };
+          
+          var front = "front";
+          var studio1 = "studio1";
+          var studio2 = "studio2";
+          var studio3 = "studio3";
+          var studio4 = "studio4";
+          var wetlab1 = "wetlab1";
+          var wetlab2 = "wetlab2";
+          var shop1 = "shop1";
+          var shop2 = "shop2";
+          var shop3 = "shop3";
+          var textile = "textile";
+          var media = "media";
+          var breakout = "breakout";
+          var print1 = "print1";
+          var print2 = "print2";
+          var sidelab1 = "sidelab1";
+          var sidelab2 = "sidelab2";
+          var hall1 = "hall1";
+          var hall2 = "hall2";
+          var hall3 = "hall3";
+          var hall4 = "hall4";
+          var hall5 = "hall5";
+          var dronein = "dronein";
+          var droneout = "droneout";
+          var meeting1 = "meeting1";
+          var meeting2 = "meeting2";
+          var electronicslab = "electronicslab";
+          var storage = "storage";
+          var introRemoved = false;
+
+          var startingRoom = front;
+
+          var roomstate = startingRoom;
+          //end of constants
+        
+          AFRAME.registerComponent("dismantle-front", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-studio2");
+              var link2 = document.getElementById("to-droneout");
+              //BAZINGA vid. = document.getElementById("frontvid-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                if(introRemoved){
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    //BAZINGA vid.setAttribute("position", defaultPos);
+                  }, fadedelay);
+                }
+              });
+            }
+          });
+                
+          AFRAME.registerComponent("assemble-front", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-studio2");
+              var link2 = document.getElementById("to-droneout");
+              //BAZINGA vid. = document.getElementById("frontvid-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                if(introRemoved){
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 1.134, y: -2.97, z: 8.977 });
+                  link1.setAttribute("rotation", { x: -90, y: 110.2, z: 0 });
+                  link2.setAttribute("position", { x: 8.675, y: -2.54, z: -2.238});
+                  link2.setAttribute("rotation", { x: -90 , y: -75.688, z: 0});
+                  //BAZINGA vid.setAttribute("position", { x: -9.58 , y: 0, z: 2.214}); 
+                  room.setAttribute("src", "#front");
+                }, fadedelay);
+                }
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("dismantle-droneout", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-front");
+              var link2 = document.getElementById("to-dronein");
+              //BAZINGA vid. = document.getElementById("droneoutvid-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    //BAZINGA vid.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-droneout", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-front");
+              var link2 = document.getElementById("to-dronein");
+              //BAZINGA vid. = document.getElementById("droneoutvid-ping");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                if(introRemoved){
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x:  8.722, y: -2.55, z: 2.62});
+                  link1.setAttribute("rotation", { x: -90 , y: -69.6, z: 0});
+                  link2.setAttribute("position", { x: -4.9 , y: -3.09, z: 7.486});
+                  link2.setAttribute("rotation", { x: -90 , y: 140.8, z: 0});
+                  //BAZINGA vid.setAttribute("position", { x: 2.989 , y: 0, z: 9.162});
+                  //BAZINGA vid.setAttribute("rotation", { x: 0 , y: 17.44, z: 0});
+
+                  room.setAttribute("src", "#droneout1");
+                }, fadedelay);
+                }
+              });
+            }
+          });
+          
+          AFRAME.registerComponent("dismantle-dronein", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-droneout");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-dronein", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-droneout");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 7.262, y: -5.18, z: -3.294});
+                  link1.setAttribute("rotation", { x: -90 , y: -75.6, z: 0});
+
+                  room.setAttribute("src", "#dronein");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-studio1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-meeting1");
+              var link2 = document.getElementById("to-studio3");
+              var link3 = document.getElementById("to-studio2");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                if(introRemoved){
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    link3.setAttribute("position", defaultPos);
+                  }, fadedelay);
+                }
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-studio1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-meeting1");
+              var link2 = document.getElementById("to-studio3");
+              var link3 = document.getElementById("to-studio2");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 7.134, y: -4.13, z: -4.185 });
+                  link1.setAttribute("rotation", { x: -90, y: 19.65, z: 0 });
+                  link2.setAttribute("position", { x: 2.521, y: -2.65, z: 8.83 });
+                  link2.setAttribute("rotation", { x: -90, y: -161, z: 0 });
+                  link2.setAttribute("scale", { x: 0.9, y: 0.9, z: 1 });
+                  link3.setAttribute("position", { x: -8.31, y: -4.13, z: 1.991 });
+                  link3.setAttribute("rotation", { x: -90, y: 110.2, z: 0 });
+
+                  room.setAttribute("src", "#studio1");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-studio2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-front");
+              var link2 = document.getElementById("to-studio4");
+              var link3 = document.getElementById("to-studio1");
+              var link4 = document.getElementById("to-hall1");
+              var link5 = document.getElementById("to-meeting2");
+              //BAZINGA vid. = document.getElementById("studiovid-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    link3.setAttribute("position", defaultPos);
+                    link4.setAttribute("position", defaultPos);
+                    link5.setAttribute("position", defaultPos);
+                    //BAZINGA vid.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+          
+          AFRAME.registerComponent("assemble-studio2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-front");
+              var link2 = document.getElementById("to-studio4");
+              var link3 = document.getElementById("to-studio1");
+              var link4 = document.getElementById("to-hall1");
+              var link5 = document.getElementById("to-meeting2");
+              //BAZINGA vid. = document.getElementById("studiovid-ping");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                if(introRemoved){
+                  room.emit("fade");
+                  setTimeout(() => {
+                    link1.setAttribute("position", { x: -7.949, y: -3.869, z: 3.559 });
+                    link1.setAttribute("rotation", { x: -90, y: 132.6, z: 0 });
+                    link2.setAttribute("position", { x: 3.022, y: -4.47, z: 7.82 });
+                    link2.setAttribute("rotation", { x: -90, y: 140.2, z: 0 });
+                    link3.setAttribute("position", { x: 5.492, y: -4.31, z: -6.468 });
+                    link3.setAttribute("rotation", { x: -90, y: -44.4, z: 0 });
+                    link4.setAttribute("position", { x: 5.598, y: -2.76, z: 7.01 });
+                    link4.setAttribute("rotation", { x: -90, y: -135.2, z: 0 });
+                    link5.setAttribute("position", { x: -1.257, y: -5.797, z: -7.489 });
+                    link5.setAttribute("rotation", { x: -90, y: 50.51, z: 0 });
+                    //BAZINGA vid.setAttribute("position", { x: 8.581, y: 0, z: -.239 });
+                    //BAZINGA vid.setAttribute("rotation", { x: 0, y: 90, z:0 });
+
+                    room.setAttribute("src", "#studio2");
+                    room.emit("fadeback");
+                  }, fadedelay);
+                }
+              });
+            }
+          });
+          
+          AFRAME.registerComponent("dismantle-studio3", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall1");
+              var link2 = document.getElementById("to-studio1");
+              var link3 = document.getElementById("to-sidelab1");
+              var link4 = document.getElementById("to-wetlab1");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    link3.setAttribute("position", defaultPos);
+                    link4.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-studio3", {
+            init: function() {
+              var el = this.el;
+              var room = document.getElementById("room");
+              var link1 = document.getElementById("to-hall1");
+              var link2 = document.getElementById("to-studio1");
+              var link3 = document.getElementById("to-sidelab1");
+              var link4 = document.getElementById("to-wetlab1");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -4.63, y: -3.3, z: 7.578 });
+                  link1.setAttribute("rotation", { x: -90, y: 148.3, z: 0 });
+                  link2.setAttribute("position", { x: -8.11, y: -3.08, z: -3.817 });
+                  link2.setAttribute("rotation", { x: -90, y: 59.98, z: 0 });
+                  link3.setAttribute("position", { x: 6.089, y: -3.42, z: 6.41 });
+                  link3.setAttribute("rotation", { x: -90, y: 149.2, z: 0 });
+                  link4.setAttribute("position", { x: 7.429, y: -3.01, z: 5.126 });
+                  link4.setAttribute("rotation", { x: -90, y: -118.6, z: 0 });
+                  room.setAttribute("src", "#studio3");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-studio4", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-studio2");
+              var link2 = document.getElementById("to-hall1");
+              var egg = document.getElementById("egg");
+              var hi = document.getElementById("hi");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    egg.setAttribute("position", defaultPos);
+                    hi.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-studio4", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-studio2");
+              var link2 = document.getElementById("to-hall1");
+              var room = document.getElementById("room");
+              var egg = document.getElementById("egg");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -0.479, y: -4.053, z: -8.566 });
+                  link1.setAttribute("rotation", { x: -90, y: -4.447, z: 0 });
+                  link2.setAttribute("position", { x: 0.51, y: -2.579, z: 9.168 });
+                  link2.setAttribute("rotation", { x: -90, y: 176.5, z: 0 });
+                  egg.setAttribute("position", { x: 8.746, y:-.76, z:-4.776 });
+                  
+                  room.setAttribute("src", "#studio4");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-wetlab1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-sidelab1");
+              var link2 = document.getElementById("to-wetlab2");
+              //BAZINGA vid. = document.getElementById("wetlabvid1-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    //BAZINGA vid.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-wetlab1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-wetlab2");
+              var link2 = document.getElementById("to-sidelab1");
+              //BAZINGA vid. = document.getElementById("wetlabvid1-ping");
+
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -6.21, y: -4.49, z: 5.695 });
+                  link1.setAttribute("rotation", { x: -90, y: 59.5, z: 0 });
+                  link2.setAttribute("position", { x: 2.556, y: -5.92, z: -7.056 });
+                  link2.setAttribute("rotation", { x: -90, y: -25.5, z: 0 });
+                  //BAZINGA vid.setAttribute("position", { x: -7.56, y: -0.9, z: -5.603 });
+                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: 53.75, z:0 });
+                  room.setAttribute("src", "#wetlab1");
+                }, fadedelay);
+              });
+            }
+          });
+                  
+          AFRAME.registerComponent("dismantle-wetlab2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-wetlab1");
+              //BAZINGA vid. = document.getElementById("wetlabvid2-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    //BAZINGA vid.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-wetlab2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-wetlab1");
+              //BAZINGA vid. = document.getElementById("wetlabvid2-ping");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -1.778, y: -5.95, z: -7.166 });
+                  link1.setAttribute("rotation", { x: -90, y: 104.3, z: 0 });
+                  //BAZINGA vid.setAttribute("position", { x: 9.557, y: -1.57, z: .57 });
+                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: -93.1, z:0 });
+                  room.setAttribute("src", "#wetlab2");
+                }, fadedelay);
+              });
+            }
+          });
+          
+          AFRAME.registerComponent("dismantle-sidelab1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-sidelab2");
+              var link2 = document.getElementById("to-studio3");
+              var link3 = document.getElementById("to-wetlab1");
+              //BAZINGA vid. = document.getElementById("sidelabvid-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    link3.setAttribute("position", defaultPos);
+                    //BAZINGA vid.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-sidelab1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-sidelab2");
+              var link2 = document.getElementById("to-wetlab1");
+              var link3 = document.getElementById("to-studio3");
+              //BAZINGA vid. = document.getElementById("sidelabvid-ping");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -3.946, y: -3.337, z: -7.832 });
+                  link1.setAttribute("rotation", { x: -90, y: 37.03, z: 0 });
+                  link2.setAttribute("position", { x: -5.51, y: -7.23, z: 3.146 });
+                  link2.setAttribute("rotation", { x: -90, y: 126.5, z: 0 });
+                  link3.setAttribute("position", { x: 8.078, y: -2.84, z: -4.047 });
+                  link3.setAttribute("rotation", { x: -90, y: -39.568, z: 0 });
+                  //BAZINGA vid.setAttribute("position", { x: -4.36, y: -.67, z: -8.12 });
+                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: 29.19, z:0 });
+                  room.setAttribute("src", "#sidelab1");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-sidelab2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-sidelab1");
+              var link2 = document.getElementById("to-hall1");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-sidelab2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-sidelab1");
+              var link2 = document.getElementById("to-hall1");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -4.856, y: -2.827, z: 7.712 });
+                  link1.setAttribute("rotation", { x: -90, y: 146.1, z: 0 });
+                  link2.setAttribute("position", { x: 2.066, y: -7.676, z: -5.407 });
+                  link2.setAttribute("rotation", { x: -90, y: -26.9, z: 0 });
+                  room.setAttribute("src", "#sidelab2");
+                }, fadedelay);
+              });
+            }
+          });
+                  
+          AFRAME.registerComponent("dismantle-hall1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-studio2");
+              var link2 = document.getElementById("to-studio4");
+              var link3 = document.getElementById("to-storage");
+              var link4 = document.getElementById("to-hall2");
+              var link5 = document.getElementById("to-sidelab2");
+              var link6 = document.getElementById("to-studio3");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    link3.setAttribute("position", defaultPos);
+                    link4.setAttribute("position", defaultPos);
+                    link5.setAttribute("position", defaultPos);
+                    link6.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-hall1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-storage");
+              var link2 = document.getElementById("to-studio2");
+              var link3 = document.getElementById("to-studio3");
+              var link4 = document.getElementById("to-studio4");
+              var link5 = document.getElementById("to-sidelab2");
+              var link6 = document.getElementById("to-hall2");
+
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                if(introRemoved){
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -2.17, y: -6.92, z: -6.31 });
+                  link1.setAttribute("rotation", { x: -90, y: 40.39 });
+                  link2.setAttribute("position", { x: 7.963, y: -2.38, z: -4.648 });
+                  link2.setAttribute("rotation", { x: -90, y: -50.6 });
+                  link3.setAttribute("position", { x: 8.534, y: -3.91, z: -1.671 });
+                  link3.setAttribute("rotation", { x: -90, y: -115 });
+                  link4.setAttribute("position", { x: 7.064, y: -2.51, z: -5.684 });
+                  link4.setAttribute("rotation", { x: -90, y: -2.12 });
+                  link5.setAttribute("position", { x: 2.771, y: -5.957, z: 6.982 });
+                  link5.setAttribute("rotation", { x: -90, y: -135.7 });
+                  link6.setAttribute("position", { x: -7.227, y: -4.429, z: 4.33 });
+                  link6.setAttribute("rotation", { x: -90, y: 130.1 });
+                  room.setAttribute("src", "#hall1");
+                }, fadedelay);
+                }
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-hall2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-printlab1");
+              var link2 = document.getElementById("to-mediaroom");
+              var link3 = document.getElementById("to-hall1");
+              var link4 = document.getElementById("to-hall3");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    link3.setAttribute("position", defaultPos);
+                    link4.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-hall2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall1");
+              var link2 = document.getElementById("to-mediaroom");
+              var link3 = document.getElementById("to-printlab1");
+              var link4 = document.getElementById("to-hall3");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -4.61, y: -4.15, z: 7.134 });
+                  link1.setAttribute("rotation", { x: -90, y: 145.1, z: 0 });
+                  link2.setAttribute("position", { x: 4.437, y: -5.3, z: 6.605 });
+                  link2.setAttribute("rotation", { x: -90, y: -129.4, z: 0 });
+                  link3.setAttribute("position", { x: -5.77, y: -6.89, z: -3.351 });
+                  link3.setAttribute("rotation", { x: -90, y: 57.62, z: 0 });
+                  link4.setAttribute("position", { x: 5.094, y: -4.02, z: -6.941 });
+                  link4.setAttribute("rotation", { x: -90, y: -31.6, z: 0 });
+                  room.setAttribute("src", "#hall2");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-hall3", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-textilelab");
+              var link2 = document.getElementById("to-printlab2");
+              var link3 = document.getElementById("to-hall2");
+              var link4 = document.getElementById("to-hall4");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    link3.setAttribute("position", defaultPos);
+                    link4.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-hall3", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall2");
+              var link2 = document.getElementById("to-hall4");
+              var link3 = document.getElementById("to-printlab2");
+              var link4 = document.getElementById("to-textilelab");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 3.555, y: -4.66, z: -7.496 });
+                  link1.setAttribute("rotation", { x: -90, y: -20.8 });
+                  link2.setAttribute("position", { x: -2.652, y: -3.494, z: 8.448 });
+                  link2.setAttribute("rotation", { x: -90, y: 159.65 });
+                  link3.setAttribute("position", { x: 6.385, y: -6.508, z: 1.043 });
+                  link3.setAttribute("rotation", { x: -90, y: -110.08 });
+                  link4.setAttribute("position", { x: -5.194, y: -7.854, z: -1.772 });
+                  link4.setAttribute("rotation", { x: -90, y: 64.4 });
+                  room.setAttribute("src", "#hall3");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-hall4", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-breakout");
+              var link2 = document.getElementById("to-hall3");
+              var link3 = document.getElementById("to-hall5");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    link3.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-hall4", {
+            init: function() {
+              var el = this.el;
+              //              var link1 = document.getElementById("to-breakout");
+              var link2 = document.getElementById("to-hall3");
+              var link3 = document.getElementById("to-hall5");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  //                    link1.setAttribute("position", { x: -5.764, y: -7.334, z: -1.098});
+                  //                    link1.setAttribute("rotation", { x: -90, y: 121.4, z:0});
+                  link2.setAttribute("position", { x: -4.574, y: -3.33, z: -7.492 });
+                  link2.setAttribute("rotation", { x: -90, y: 34.61, z: 0 });
+                  link3.setAttribute("position", { x: 4.454, y: -3.8, z: 7.527 });
+                  link3.setAttribute("rotation", { x: -90, y: -148.9, z: 0 });
+                  room.setAttribute("src", "#hall4");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-hall5", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-shop1");
+              var link2 = document.getElementById("to-hall4");
+              var link3 = document.getElementById("to-electronicslab");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    link3.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-hall5", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-shop1");
+              var link2 = document.getElementById("to-hall4");
+              var link3 = document.getElementById("to-electronicslab");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -7.44, y: -5.51, z: -0.6 });
+                  link1.setAttribute("rotation", { x: -90, y: 81.84 });
+                  link2.setAttribute("position", { x: -0.53, y: -3.56, z: 8.78 });
+                  link2.setAttribute("rotation", { x: -90, y: 162.9 });
+                  link3.setAttribute("position", { x: 1.31, y: -2.796, z: -9.009});
+                  link3.setAttribute("rotation", { x: -90, y: -11.4});
+                  room.setAttribute("src", "#hall5");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-electronicslab", {
+            init: function() {
+              var el = this.el;
+              var crest = document.getElementById("crest");
+              var circle = document.getElementById("circle");
+              var link1 = document.getElementById("to-hall5");
+              //BAZINGA vid.1 = document.getElementById("electronicslabvid1-ping");
+              //BAZINGA vid.2 = document.getElementById("electronicslabvid2-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    //BAZINGA vid1.setAttribute("position", defaultPos);
+                    //BAZINGA vid2.setAttribute("position", defaultPos);
+                  }, fadedelay);
+                  
+                  crest.setAttribute("scale", {x: 1, y:1});
+                  circle.setAttribute("position", {x:0, y:-9.5});
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-electronicslab", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall5");
+              var crest = document.getElementById("crest");
+              var circle = document.getElementById("circle");
+              var room = document.getElementById("room");
+              //BAZINGA vid.1 = document.getElementById("electronicslabvid1-ping");
+              //BAZINGA vid.2 = document.getElementById("electronicslabvid2-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -8.27, y: -3.67 , z: -2.934 });
+                  link1.setAttribute("rotation", { x: -90 , y: 98.22, z: 0});
+                  crest.setAttribute("scale", {x: .55, y:.55});
+                  circle.setAttribute("position", {x:0, y:-9.86});
+                  //BAZINGA vid1.setAttribute("position", { x: .227, y: -.64, z: 9.631 });
+                  //BAZINGA vid1.setAttribute("rotation", { x: 0, y: 181.8, z:0 });
+                  //BAZINGA vid2.setAttribute("position", { x: 2.513, y: -.54, z: 8.751 });
+                  //BAZINGA vid2.setAttribute("rotation", { x: 0, y: -164.268, z:0 });
+
+                  room.setAttribute("src", "#electronicslab");
+                }, fadedelay);
+              });
+            }
+          });
+             
+          AFRAME.registerComponent("dismantle-printlab1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall2");
+              var link2 = document.getElementById("to-printlab2");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-printlab1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-printlab2");
+              var link2 = document.getElementById("to-hall2");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 4.834, y: -3.954,z: -7.169 });
+                  link1.setAttribute("rotation", { x: -90, y: -125.655 });
+                  link2.setAttribute("position", { x: 6.146, y: -6, z: 4.22 });
+                  link2.setAttribute("rotation", { x: -90, y: -125.655 });
+                  room.setAttribute("src", "#printlab1");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("dismantle-printlab2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-printlab1");
+              var link2 = document.getElementById("to-hall3");
+              //BAZINGA vid. = document.getElementById("printvid-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    //BAZINGA vid.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-printlab2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-printlab1");
+              var link2 = document.getElementById("to-hall3");
+              //BAZINGA vid. = document.getElementById("printvid-ping");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 4.178, y: -3.72, z: 7.693 });
+                  link1.setAttribute("rotation", { x: -90, y: -53.1 });
+                  link2.setAttribute("position", { x: 6.432, y: -5.9, z: -3.354 });
+                  link2.setAttribute("rotation", { x: -90, y: -53.1 });
+                  //BAZINGA vid.setAttribute("position", { x: 1.803, y: -1.06, z: -9.662 });
+                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: -9.29, z:0 });
+                  room.setAttribute("src", "#printlab2");
+                }, fadedelay);
+              });
+            }
+          });
+          
+          AFRAME.registerComponent("dismantle-storage", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall1");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-storage", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall1");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 4.23, y: -6.634, z: 5.492 });
+                  link1.setAttribute("rotation", { x: -90, y: -123 });
+                  room.setAttribute("src", "#storage");
+                }, fadedelay);
+              });
+            }
+          });
+        
+
+        
+          AFRAME.registerComponent("dismantle-mediaroom", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall2");
+              //BAZINGA vid. = document.getElementById("mediavid-ping");
+              
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    //BAZINGA vid.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+                
+          AFRAME.registerComponent("assemble-mediaroom", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall2");
+              var room = document.getElementById("room");
+              //BAZINGA vid. = document.getElementById("mediavid-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: -0.874, y: -5.407, z: 7.398 });
+                  link1.setAttribute("rotation", { x: -90, y: -165.562 });
+                  //BAZINGA vid.setAttribute("position", { x: 9.186, y: .724, z: -3.518 });
+                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: -68.8, z:0 });
+                  
+                  room.setAttribute("src", "#mediaroom");
+                }, fadedelay);
+              });
+            }
+          });
+                     
+          AFRAME.registerComponent("dismantle-textilelab", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall3");
+              //BAZINGA vid. = document.getElementById("textilevid-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    //BAZINGA vid.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+                
+          AFRAME.registerComponent("assemble-textilelab", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall3");
+              //BAZINGA vid. = document.getElementById("textilevid-ping");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 2.251, y: -5.336, z: -7.019 });
+                  link1.setAttribute("rotation", { x: -90, y: -3.251 });
+                  //BAZINGA vid.setAttribute("position", { x: -9.45, y: -.553, z: .996 });
+                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: 96.11, z:0 });
+                  room.setAttribute("src", "#textilelab");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("dismantle-breakout", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall4");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                link1.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+                
+          AFRAME.registerComponent("assemble-breakout", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall4");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 2.251, y: -5.336, z: -7.019 });
+                  link1.setAttribute("rotation", { x: -90, y: -3.251 });
+                  room.setAttribute("src", "#textilelab");
+                }, fadedelay);
+              });
+            }
+          });
+        
+        
+          AFRAME.registerComponent("dismantle-meeting1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-studio1");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-meeting1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-studio1");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 3.239, y: -4.65, z: 7.677 });
+                  link1.setAttribute("rotation", { x: -90, y: 169.2, z: 0 });
+
+                  room.setAttribute("src", "#meeting1");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-sayhi", {
+            init: function() {
+              var el = this.el;
+              var hi = document.getElementById("hi");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                    hi.setAttribute("position", {x:8.513, y:-2.39, z:-3});
+                }
+              );
+            }
+          });
+          
+          AFRAME.registerComponent("dismantle-meeting2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-studio2");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                if(introRemoved){
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                  }, fadedelay);
+                }
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-meeting2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-studio2");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 3.643, y: -4.13, z: -7.69 });
+                  link1.setAttribute("rotation", { x: -90, y: -17.7, z: 0 });
+
+                  room.setAttribute("src", "#meeting2");
+                }, fadedelay);
+              });
+            }
+          });
+
+        
+          AFRAME.registerComponent("dismantle-shop1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall5");
+              var link2 = document.getElementById("to-shop2");
+              var link3 = document.getElementById("to-shop3");
+              //BAZINGA vid. = document.getElementById("shopvid-ping");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                    link2.setAttribute("position", defaultPos);
+                    link3.setAttribute("position", defaultPos);
+                    //BAZINGA vid.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-shop1", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-hall5");
+              var link2 = document.getElementById("to-shop2");
+              var link3 = document.getElementById("to-shop3");
+              //BAZINGA vid. = document.getElementById("shopvid-ping");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 6.463, y: -7.07, z: -0.074 }); 
+                  link1.setAttribute("rotation", { x: -90, y: -89.4 });
+                  link2.setAttribute("position", { x: -1.124, y: -3.297, z: -8.861 });
+                  link2.setAttribute("rotation", { x: -90, y: 103.7 });
+                  link3.setAttribute("position", { x: 0.684, y: -2.51, z: 9.123 });
+                  link3.setAttribute("rotation", { x: -90, y: 86.68 });
+                  //BAZINGA vid.setAttribute("position", { x: -9.64, y: 0, z: .263 });
+                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: 90, z:0});
+                  room.setAttribute("src", "#shop1");
+                }, fadedelay);
+              });
+            }
+          });
+
+          AFRAME.registerComponent("dismantle-shop2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-shop1");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-shop2", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-shop1");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 8.397, y: -4.15, z: 1.79 });
+                  link1.setAttribute("rotation", { x: -90, y: -154 });
+                  room.setAttribute("src", "#shop2");
+                }, fadedelay);
+              });
+            }
+          });
+
+          
+          AFRAME.registerComponent("dismantle-shop3", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-shop1");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                  setTimeout(() => {
+                    link1.setAttribute("position", defaultPos);
+                  }, fadedelay);
+              });
+            }
+          });
+        
+          AFRAME.registerComponent("assemble-shop3", {
+            init: function() {
+              var el = this.el;
+              var link1 = document.getElementById("to-shop1");
+              var room = document.getElementById("room");
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var room = document.getElementById("room");
+                room.emit("fade");
+                setTimeout(() => {
+                  room.emit("fadeback");
+                  link1.setAttribute("position", { x: 8.148, y: -4.08, z: 0.391 });
+                  link1.setAttribute("rotation", { x: -90, y: -21.8 });
+                  room.setAttribute("src", "#shop3");
+                }, fadedelay);
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("reset-scale", {
+            init: function() {
+              var el = this.el;
+
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                el.setAttribute("scale", { x: 1, y: 1, z: 1 });
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("roomswitch", {
+            init: function() {
+              var el = this.el;
+              var room = document.getElementById("room");
+              var crest = document.getElementById("crest");
+              // Add event listeners here.
+              el.addEventListener("click", function() {
+                var coords = room.getAttribute("rotation").y;
+                var cCoords = crest.getAttribute("rotation").z;
+                var diff = 0;
+                var lost = false;
+                if(introRemoved){
+                setTimeout(() => {
+                  switch (el.id) {
+                    case "to-front": //studio2, droneout
+                      if (roomstate == studio2) diff = 169.7;
+                      else if (roomstate == droneout) diff = -150.17;
+                      else lost = true;
+
+                      roomstate = front;
+                      break;
+                    
+                    case "to-dronein": //studio2, droneout
+                      diff = 0;
+                      roomstate = droneout;
+                      break;
+                                            
+                    case "to-droneout": //studio2, droneout
+                      if (roomstate == front) diff = 190;
+                      else if ( roomstate == dronein) diff = 0;
+                      else lost = true;
+
+                      roomstate = droneout;
+                      break;
+
+                    case "to-studio1": //meeting1, studio 2, studio 3
+                      if (roomstate == meeting1) diff = -60;
+                      else if (roomstate == studio2) diff = -30;
+                      else if (roomstate == studio3) diff = 20;
+                      else lost = true;
+
+                      roomstate = studio1;
+                      break;
+
+                    case "to-studio2": //front, studio 1, studio 4, meeting 2, hall 1
+                      if (roomstate == front) diff = -236;
+                      else if (roomstate == studio1) diff = 30;
+                      else if (roomstate == studio4) diff = 44;
+                      else if (roomstate == meeting2) diff = 240.8;
+                      else if (roomstate == hall1) diff = 102.2;
+                      else lost = true;
+
+                      roomstate = studio2;
+                      break;
+
+                    case "to-studio3": //studio 1, sidelab1, hall 1
+                      if (roomstate == studio1) diff = 47;
+                      else if (roomstate == sidelab1) diff = 102;
+                      else if (roomstate == hall1) diff = 75;
+                      else lost = true;
+
+                      roomstate = studio3;
+                      break;
+
+                    case "to-studio4": //studio 2, hall 1
+                      if (roomstate == studio2) diff = -90;
+                      else if (roomstate == hall1) diff = 150;
+                      else lost = true;
+
+                      roomstate = studio4;
+                      break;
+
+                    case "to-meeting1": //studio 1
+                      diff = 120;
+                      roomstate = meeting1;
+                      break;
+
+                    case "to-meeting2": // studio 2
+                      diff = 82.2;
+                      roomstate = meeting2;
+                      break;
+
+                    case "to-wetlab1": // wetlab 2, sidelab 1, studio 3
+                      if (roomstate == wetlab2) diff = -25;
+                      else if (roomstate == studio3) diff = -92;
+                      else if (roomstate == sidelab1) diff = 28;
+                      else lost = true;
+
+                      roomstate = wetlab1;
+                      break;
+
+                    case "to-wetlab2": //wetlab 1
+                      diff = 50;
+                      roomstate = wetlab2;
+                      break;
+
+                    case "to-sidelab1":
+                      if (roomstate == wetlab1)
+                        //wetlab 1, studio 3, sidelab 2
+                        diff = -22.7;
+                      else if (roomstate == studio3) diff = -202;
+                      else if (roomstate == sidelab2) diff = -225;
+                      else lost = true;
+
+                      roomstate = sidelab1;
+                      break;
+
+                    case "to-sidelab2": // hall 1, sidelab 1
+                      if (roomstate == sidelab1) diff = 300.5;
+                      else if (roomstate == hall1) diff = -54.5;
+                      else lost = true;
+
+                      roomstate = sidelab2;
+                      break;
+
+                    case "to-hall1": //hall 2, studio 4, studio 2, studio 3, sidelab 2, storage
+                      if (roomstate == hall2) diff = 152;
+                      else if (roomstate == studio2) diff = -96.7;
+                      else if (roomstate == studio3) diff = -27.8;
+                      else if (roomstate == studio4) diff = -61.8;
+                      else if (roomstate == sidelab2) diff = 40;
+                      else if (roomstate == storage) diff = -18;
+                      else lost = true;
+
+                      roomstate = hall1;
+                      break;
+
+                    case "to-hall2": //hall 1, hall 3, printlab 1, mediaroom
+                      if (roomstate == hall1) diff = 203;
+                      else if (roomstate == hall3) diff = 172.6;
+                      else if (roomstate == print1) diff = -7.85;
+                      else if (roomstate == media) diff = -120;
+                      else lost = true;
+
+                      roomstate = hall2;
+                      break;
+
+                    case "to-hall3": // hall 2, hall 4, printlab 2, textile lab
+                      if (roomstate == hall2) diff = -160;
+                      else if (roomstate == hall4) diff = -52.6;
+                      else if (roomstate == print2) diff = 125.5;
+                      else if (roomstate == textile) diff = -96.4;
+                      else lost = true;
+
+                      roomstate = hall3;
+                      break;
+
+                    case "to-hall4": // hall 3, hall 5, breakout
+                      if (roomstate == hall3) diff = 44;
+                      else if (roomstate == hall5) diff = -144;
+                      // else if(roomstate == breakout)
+                      // diff = ;
+                      else lost = true;
+
+                      roomstate = hall4;
+                      break;
+
+                    case "to-hall5": // hall 4, shop 1, electronicslab
+                      if (roomstate == hall4) diff = 140;
+                      else if (roomstate == shop1) diff = -7.4;
+                      else if(roomstate == electronicslab) diff = 102.5;
+                      else lost = true;
+
+                      roomstate = hall5;
+                      break;
+
+                    case "to-printlab1": // printlab 2, hall 2
+                      if (roomstate == print2) diff = -4.9;
+                      else if (roomstate == hall2) diff = -55;
+                      else lost = true;
+
+                      roomstate = print1;
+                      break;
+
+                    case "to-printlab2": // printlab 1, hall 3
+                      if (roomstate == print1) diff = -4.9;
+                      else if (roomstate == hall3) diff = -50;
+                      else lost = true;
+
+                      roomstate = print2;
+                      break;
+
+                    case "to-shop1": // shop 2, shop 3, hall 5
+                      if (roomstate == shop2) diff = -55;
+                      else if (roomstate == shop3) diff = 155;
+                      else if (roomstate == hall5) diff = 13.7;
+                      else lost = true;
+
+                      roomstate = shop1;
+                      break;
+
+                    case "to-shop2": // shop 1
+                      diff = 50;
+                      roomstate = shop2;
+                      break;
+
+                    case "to-shop3": // shop 1
+                      diff = -130;
+                      roomstate = shop3;
+                      break;
+
+                    case "to-storage": // hall 1
+                      diff = 20.8;
+                      roomstate = storage;
+                      break;
+
+                    case "to-mediaroom": // hall 2
+                      diff = 118.7;
+                      roomstate = media;
+                      break;
+
+                    case "to-textilelab": // hall 3
+                      diff = 46;
+                      roomstate = textile;
+                      break;
+                    
+                    case "to-electronicslab": // hall 3
+                      diff = 115;
+                      roomstate = electronicslab;
+                      break;
+                    
+                      
+
+                    // case "to-breakout": // hall 4
+                    // if (roomstate == front)
+                    // {diff = -236;}
+                    // roomstate = breakout;
+                    // break;
+
+                    default:
+                      lost = true;
+                      diff = 0;
+                      break;
+                  }
+                  room.setAttribute("rotation", { y: coords + diff });
+                  if (roomstate == lost) {
+                    window.alert("something went wrong");
+                    lost = false;
+                  }
+                }, fadedelay);
+                }
+              });
+            }
+          });
+        
+          
+          AFRAME.registerComponent("faderoommarkers", {
+            init: function() {
+              var el = this.el;
+              var front = document.getElementById("to-front");
+              var dronein = document.getElementById("to-dronein");
+              var droneout = document.getElementById("to-droneout");
+              var studio1 = document.getElementById("to-studio1");
+              var studio2 = document.getElementById("to-studio2");
+              var studio3 = document.getElementById("to-studio3");
+              var studio4 = document.getElementById("to-studio4");
+              var meeting1 = document.getElementById("to-meeting1");
+              var meeting2 = document.getElementById("to-meeting2");
+              var sidelab1 = document.getElementById("to-sidelab1");
+              var sidelab2 = document.getElementById("to-sidelab2");
+              var wetlab1 = document.getElementById("to-wetlab1");
+              var wetlab2 = document.getElementById("to-wetlab2");
+              var hall1 = document.getElementById("to-hall1");
+              var hall2 = document.getElementById("to-hall2");
+              var hall3 = document.getElementById("to-hall3");
+              var hall4 = document.getElementById("to-hall4");
+              var hall5 = document.getElementById("to-hall5");
+              var shop1 = document.getElementById("to-shop1");
+              var shop2 = document.getElementById("to-shop2");
+              var shop3 = document.getElementById("to-shop3");
+              var electronicslab = document.getElementById("to-electronicslab");
+              var storage = document.getElementById("to-storage");
+              var textilelab = document.getElementById("to-textilelab");
+              var mediaroom = document.getElementById("to-mediaroom");
+              var printlab1 = document.getElementById("to-printlab1");
+              var printlab2 = document.getElementById("to-printlab2");
+              
+              //BAZINGA var frontvid = document.getElementById("frontvid-ping");
+              //BAZINGA var printvid = document.getElementById("printvid-ping");
+              //BAZINGA var droneoutvid = document.getElementById("droneoutvid-ping");
+              //BAZINGA var shopvid = document.getElementById("shopvid-ping");
+              //BAZINGA var mediavid = document.getElementById("mediavid-ping");
+              //BAZINGA var studiovid = document.getElementById("studiovid-ping");
+              //BAZINGA var sidelabvid = document.getElementById("sidelabvid-ping");
+              //BAZINGA var wetlabvid1 = document.getElementById("wetlabvid1-ping");
+              //BAZINGA var wetlabvid2 = document.getElementById("wetlabvid2-ping");
+              //BAZINGA var textilevid = document.getElementById("textilevid-ping");
+              //BAZINGA var electronicslabvid1 = document.getElementById("electronicslabvid1-ping");
+              //BAZINGA var electronicslabvid2 = document.getElementById("electronicslabvid2-ping");
+              
+              el.addEventListener("click", function(){
+                if(introRemoved){
+                front.emit("fade");
+                dronein.emit("fade");
+                droneout.emit("fade");
+                studio1.emit("fade");
+                studio2.emit("fade");
+                studio3.emit("fade");
+                studio4.emit("fade");
+                meeting1.emit("fade");
+                meeting2.emit("fade");
+                sidelab1.emit("fade");
+                sidelab2.emit("fade");
+                wetlab1.emit("fade");
+                wetlab2.emit("fade");
+                hall1.emit("fade");
+                hall2.emit("fade");
+                hall3.emit("fade");
+                hall4.emit("fade");
+                hall5.emit("fade");
+                shop1.emit("fade");
+                shop2.emit("fade");
+                shop3.emit("fade");
+                electronicslab.emit("fade");
+                storage.emit("fade");
+                textilelab.emit("fade");
+                mediaroom.emit("fade");
+                printlab1.emit("fade");
+                printlab2.emit("fade");
+                                
+                //BAZINGA front vid.emit("fade");
+                //BAZINGA print vid.emit("fade");
+                //BAZINGA droneout vid.emit("fade");
+                //BAZINGA shop vid.emit("fade");
+                //BAZINGA media vid.emit("fade");
+                //BAZINGA studio vid.emit("fade");
+                //BAZINGA sidelab vid.emit("fade");
+                //BAZINGA wetlab vid1.emit("fade");
+                //BAZINGA wetlab vid2.emit("fade");
+                //BAZINGA textile vid.emit("fade");
+                //BAZINGA electronicslab vid1.emit("fade");
+                //BAZINGA electronicslab vid2.emit("fade");
+                
+                setTimeout(() => {
+                  front.emit("fadeback");
+                  dronein.emit("fadeback");
+                  droneout.emit("fadeback");
+                  studio1.emit("fadeback");
+                  studio2.emit("fadeback");
+                  studio3.emit("fadeback");
+                  studio4.emit("fadeback");
+                  meeting1.emit("fadeback");
+                  meeting2.emit("fadeback");
+                  sidelab1.emit("fadeback");
+                  sidelab2.emit("fadeback");
+                  wetlab1.emit("fadeback");
+                  wetlab2.emit("fadeback");
+                  hall1.emit("fadeback");
+                  hall2.emit("fadeback");
+                  hall3.emit("fadeback");
+                  hall4.emit("fadeback");
+                  hall5.emit("fadeback");
+                  shop1.emit("fadeback");
+                  shop2.emit("fadeback");
+                  shop3.emit("fadeback");
+                  electronicslab.emit("fadeback");
+                  storage.emit("fadeback");
+                  textilelab.emit("fadeback");
+                  mediaroom.emit("fadeback");
+                  printlab1.emit("fadeback");
+                  printlab2.emit("fadeback");
+                  
+                  //BAZINGA front vid.emit("fadeback");
+                  //BAZINGA print vid.emit("fadeback");
+                  //BAZINGA droneout vid.emit("fadeback");
+                  //BAZINGA shop vid.emit("fadeback");
+                  //BAZINGA media vid.emit("fadeback");
+                  //BAZINGA studio vid.emit("fadeback");
+                  //BAZINGA sidelab vid.emit("fadeback");
+                  //BAZINGA wetlab vid1.emit("fadeback");
+                  //BAZINGA wetlab vid2.emit("fadeback");
+                  //BAZINGA textile vid.emit("fadeback");
+                  //BAZINGA electronicslab vid1.emit("fadeback");
+                  //BAZINGA electronicslab vid2.emit("fadeback");
+                }, fadedelay);
+                }
+              });
+            }
+          });
+                
+          
+          AFRAME.registerComponent("cursorclick", {
+          init: function() {
+            var cursor = document.getElementById("cursor");
+            
+            document.addEventListener("click", function(){
+              cursor.emit("click");
+            })
+          }
+        });
+          
+        AFRAME.registerComponent("startclick", {
+          init: function() {
+            var el = this.el;
+            var start = document.getElementById("start");
+            var instructions = document.getElementById("instructions");
+            var studio = document.getElementById("to-studio2");
+            
+            el.addEventListener("click", function(){
+              start.emit("btnclick");
+              instructions.emit("btnclick");
+              studio.setAttribute("position", { x: 1.134, y: -2.97, z: 8.977 });
+              studio.setAttribute("rotation", { x: -90, y: 110.2, z: 0 });
+              introRemoved = true;
+              
+            });
+          }
+        });
+        </script>
+      </a-assets>
+
+      <!-- start cursor & camera -->
+      <a-entity id="rig" position="0 -1.6 0" rotation="0 -103 0">
+        <!-- y-position set to -1.6 to counteract the default height of the user at 1.6 meters, which was causing some image distortion  -->
+        <a-camera
+          id="camera"
+          wasd-controls="enabled:false"
+          look-controls
+          cursor="rayOrigin: mouse"
+        >
+          
+          
+          <!-- todo: may need the cursor component again, need to check if this works online -->
+          <a-entity 
+            id="cursor"
+            cursor="fuse:false; downEvents:click;"
+            animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: .15 .15 .15; to: .075 .075 .075"
+            animation__mouseenter="property: scale; startEvents: mouseenter; easing: easeInCubic; dur: 500; to .15 .15 .15"
+            animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: .075 .075 .075"
+            material="color: #eee; shader: flat"  
+            position="0 0 -8.25"
+            geometry="primitive: ring"
+            scale=".075 .075 .075"
+          ></a-entity>
+        </a-camera>
+      </a-entity>
+
+      
+      <!-- end cursor & camera -->
+
+      <!-- start room and floor-->
+      <!-- links should be placed inside the sky entity so that they are positioned relative to the rotation of the room (and thus the image on the room)--> 
+        <a-image id="instructions"
+                 src="#intro"
+                 position="5.321 0 1.237"
+                 rotation="0 -103 0"
+                 scale="12.3 6.3 1"
+                 animation__disappear="property:material.opacity; to:0; dur:1; startEvents:btnclick;"
+                 animation__move="property:position; to: 0 -30 0; dur:1; startEvents:btnclick">          
+          <a-image id="start"
+                   src="#startbtn"
+                   position="0 -.33 .1"
+                   scale=".21 .139 1"
+                   animation__disappear="property:material.opacity; to:0; dur:1; startEvents:btnclick;"
+                   startclick></a-image>
+        </a-image>
+      <a-sky
+        id="room"
+        src="#front"
+        radius="10"
+        rotation="0 0 0"
+        animation__fade="property: components.material.material.color; type: color; from: #FFF; to: #000; dur: 300; startEvents: fade "
+        animation__fadeback="property: components.material.material.color; type: color; from: #000; to: #FFF; dur: 300; startEvents: fadeback"
+      ><!-- cursorclick -->
+        <!-- room links -->
+        <a-image
+          id="to-front"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-studio2
+          dismantle-droneout
+          assemble-front
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+        
+        <!-- BAZINGA<a-image
+          id="frontvid-ping"
+          src="#ping"
+          position="-9.58 0 2.214"
+          rotation="0 96.8 0"
+          to-frontvid
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+
+        <a-image
+          id="to-droneout"
+          src="#moveArrow"
+          position=" 8.675 -2.54 -2.238}"
+          rotation=" -90 -75.688 0"
+          dismantle-front
+          assemble-droneout
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+
+        <!-- change base position-->
+        <!--BAZINGA <a-image
+          id="droneoutvid-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-droneoutvid
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+        
+        <a-image
+          id="to-dronein"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-droneout
+          assemble-dronein
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+
+        <a-image
+          id="to-studio1"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-studio2
+          dismantle-studio3
+          dismantle-meeting1
+          assemble-studio1
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+
+        <a-image
+          id="to-studio2"
+          src="#moveArrow"
+          position="1.134 -2.97 8.977"
+          rotation="-90 110.2 0"
+          dismantle-front
+          dismantle-studio1
+          dismantle-studio4
+          dismantle-hall1
+          dismantle-meeting2
+          assemble-studio2
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+        
+        <!--BAZINGA <a-image
+          id="studiovid-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-studiovid
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+
+        <a-image
+          id="to-studio3"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-studio1
+          dismantle-sidelab1
+          dismantle-hall1
+          assemble-studio3
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+
+        <a-image
+          id="to-studio4"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-studio2
+          dismantle-hall1
+          assemble-studio4
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+
+        <a-image
+          id="to-meeting1"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-studio1
+          assemble-meeting1
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+
+        <a-image
+          id="to-meeting2"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-studio2
+          assemble-meeting2
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+
+        <a-image
+          id="to-wetlab1"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-sidelab1
+          dismantle-wetlab2
+          dismantle-studio3
+          assemble-wetlab1
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+        
+        <!--BAZINGA <a-image
+          id="wetlabvid1-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-wetlabvid1
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+
+        <a-image
+          id="to-wetlab2"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-wetlab1
+          assemble-wetlab2
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+        
+        <!--BAZINGA <a-image
+          id="wetlabvid2-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-wetlabvid2
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+
+        <a-image
+          id="to-sidelab1"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-studio3
+          dismantle-sidelab2
+          dismantle-wetlab1
+          assemble-sidelab1
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+
+        <a-image
+          id="to-sidelab2"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-sidelab1
+          dismantle-hall1
+          assemble-sidelab2
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+        
+        <!--BAZINGA <a-image
+          id="sidelabvid-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-sidelabvid
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+
+        <a-image
+          id="to-hall1"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-studio2
+          dismantle-studio3
+          dismantle-studio4
+          dismantle-sidelab2
+          dismantle-storage
+          dismantle-hall2
+          assemble-hall1
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+
+        <a-image
+          id="to-hall2"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall1
+          dismantle-hall3
+          dismantle-printlab1
+          dismantle-mediaroom
+          assemble-hall2
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+
+        <a-image
+          id="to-hall3"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall2
+          dismantle-hall4
+          dismantle-printlab2
+          dismantle-textilelab
+          assemble-hall3
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+
+        <a-image
+          id="to-hall4"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall3
+          dismantle-hall5
+          dismantle-breakout
+          assemble-hall4
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+
+        <a-image
+          id="to-hall5"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall4
+          dismantle-electronicslab
+          dismantle-shop1
+          assemble-hall5
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+
+        <a-image
+          id="to-electronicslab"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall5
+          assemble-electronicslab
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        >
+        </a-image>
+        
+        <!--BAZINGA <a-image
+          id="electronicslabvid1-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-electronicslabvid1
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+        
+        <!--BAZINGA <a-image
+          id="electronicslabvid2-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-electronicslabvid2
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+
+        <a-image
+          id="to-storage"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall1
+          assemble-storage
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+
+        <a-image
+          id="to-mediaroom"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall2
+          assemble-mediaroom
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+        
+        <!--BAZINGA <a-image
+          id="mediavid-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-mediavid
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+
+        <a-image
+          id="to-textilelab"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall3
+          assemble-textilelab
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+
+        <!--BAZINGA <a-image
+          id="textilevid-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-textilevid
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+        
+        <a-sphere 
+          id="egg" 
+          scale=".35 .39 .26" 
+          position="0 -15 0" 
+          transparent="true" 
+          opacity="0.1" 
+          assemble-sayhi
+          ></a-sphere>
+        
+        <a-image
+          id="to-breakout"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall4
+          assemble-breakout
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+
+        <a-image
+          id="to-printlab1"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall2
+          dismantle-printlab2
+          assemble-printlab1
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+
+        <a-image
+          id="to-printlab2"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall3
+          dismantle-printlab1
+          assemble-printlab2
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+
+        <!--BAZINGA <a-image
+          id="printvid-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-printvid
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+        
+
+        <a-image
+          id="to-shop1"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-hall5
+          dismantle-shop2
+          dismantle-shop3
+          assemble-shop1
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+
+        <!--BAZINGA <a-image
+          id="shopvid-ping"
+          src="#ping"
+          position="0 -15 0"
+          rotation="0 90 0"
+          to-shopvid
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+          ></a-image> -->
+        
+        <a-entity 
+          id="hi" 
+          text="value: Hi, I'm Kevin, I coded this tour!;" 
+          position="0 -15 0" 
+          rotation="-66.2 -84.2 -1" 
+          scale="-10 10 10"></a-entity><!-- -->
+        <a-image
+          id="to-shop2"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-shop1
+          assemble-shop2
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+
+        <a-image
+          id="to-shop3"
+          src="#moveArrow"
+          position="0 -15 0"
+          rotation="-90 0 0"
+          dismantle-shop1
+          assemble-shop3
+          roomswitch
+          faderoommarkers
+          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
+          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
+        ></a-image>
+      </a-sky>
+
+      <a-circle 
+        id="circle"
+        color="#A70034"
+        position="0 -9.5 0"
+        rotation="-90 0 0"
+        scale="5 5 5"
+      >
+        <a-image
+          id="crest"
+          src="#shuCrest"
+          position="0 0 .3"
+          rotation="0 0 -103"
+        ></a-image>
+      </a-circle>
+      <!-- end room and floor-->
+    </a-scene>
+  </body>
+</html>
