@@ -4,7 +4,7 @@
     <title>360&deg; VR Tour</title>
     <meta
       name="description"
-      content="360&deg; Sacred Heart Engineering Department VR Tour"
+      content="360&deg; Sacred Heart IdeaLab VR Tour"
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
 
@@ -64,8 +64,6 @@
         <img id="droneout1" crossorigin="anonymous" src="assets/AVRS_outside.JPG"/><!-- front, avrs inside -->
         <img id="droneout2" crossorigin="anonymous" src="assets/AVRS_outside2.JPG"/><!-- not used -->
         
-        <img id="intro" crossorigin="anonymous" src="assets/intro.png">
-        <img id="startbtn" crossorigin="anonymous" src="assets/start.png">
         <!-- <img id="" crossorigin="anonymous" src=""/><!-- -->
         
         <!-- start room setup scripts -->
@@ -137,7 +135,7 @@ todo:
           var meeting2 = "meeting2";
           var electronicslab = "electronicslab";
           var storage = "storage";
-          var introRemoved = false;
+          var introRemoved = true; //BAZINGA how does this work? Does not have any visible effect
 
           var startingRoom = front;
 
@@ -149,7 +147,6 @@ todo:
               var el = this.el;
               var link1 = document.getElementById("to-studio2");
               var link2 = document.getElementById("to-droneout");
-              //BAZINGA vid. = document.getElementById("frontvid-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
@@ -157,7 +154,6 @@ todo:
                   setTimeout(() => {
                     link1.setAttribute("position", defaultPos);
                     link2.setAttribute("position", defaultPos);
-                    //BAZINGA vid.setAttribute("position", defaultPos);
                   }, fadedelay);
                 }
               });
@@ -169,7 +165,6 @@ todo:
               var el = this.el;
               var link1 = document.getElementById("to-studio2");
               var link2 = document.getElementById("to-droneout");
-              //BAZINGA vid. = document.getElementById("frontvid-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
@@ -181,7 +176,6 @@ todo:
                   link1.setAttribute("rotation", { x: -90, y: 110.2, z: 0 });
                   link2.setAttribute("position", { x: 8.675, y: -2.54, z: -2.238});
                   link2.setAttribute("rotation", { x: -90 , y: -75.688, z: 0});
-                  //BAZINGA vid.setAttribute("position", { x: -9.58 , y: 0, z: 2.214}); 
                   room.setAttribute("src", "#front");
                 }, fadedelay);
                 }
@@ -194,15 +188,13 @@ todo:
               var el = this.el;
               var link1 = document.getElementById("to-front");
               var link2 = document.getElementById("to-dronein");
-              //BAZINGA vid. = document.getElementById("droneoutvid-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
                   setTimeout(() => {
                     link1.setAttribute("position", defaultPos);
                     link2.setAttribute("position", defaultPos);
-                    //BAZINGA vid.setAttribute("position", defaultPos);
-                  }, fadedelay);
+                   }, fadedelay);
               });
             }
           });
@@ -225,8 +217,6 @@ todo:
                   link1.setAttribute("rotation", { x: -90 , y: -69.6, z: 0});
                   link2.setAttribute("position", { x: -4.9 , y: -3.09, z: 7.486});
                   link2.setAttribute("rotation", { x: -90 , y: 140.8, z: 0});
-                  //BAZINGA vid.setAttribute("position", { x: 2.989 , y: 0, z: 9.162});
-                  //BAZINGA vid.setAttribute("rotation", { x: 0 , y: 17.44, z: 0});
 
                   room.setAttribute("src", "#droneout1");
                 }, fadedelay);
@@ -326,7 +316,6 @@ todo:
               var link3 = document.getElementById("to-studio1");
               var link4 = document.getElementById("to-hall1");
               var link5 = document.getElementById("to-meeting2");
-              //BAZINGA vid. = document.getElementById("studiovid-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
@@ -336,7 +325,6 @@ todo:
                     link3.setAttribute("position", defaultPos);
                     link4.setAttribute("position", defaultPos);
                     link5.setAttribute("position", defaultPos);
-                    //BAZINGA vid.setAttribute("position", defaultPos);
                   }, fadedelay);
               });
             }
@@ -350,7 +338,6 @@ todo:
               var link3 = document.getElementById("to-studio1");
               var link4 = document.getElementById("to-hall1");
               var link5 = document.getElementById("to-meeting2");
-              //BAZINGA vid. = document.getElementById("studiovid-ping");
               var room = document.getElementById("room");
 
               // Add event listeners here.
@@ -368,8 +355,6 @@ todo:
                     link4.setAttribute("rotation", { x: -90, y: -135.2, z: 0 });
                     link5.setAttribute("position", { x: -1.257, y: -5.797, z: -7.489 });
                     link5.setAttribute("rotation", { x: -90, y: 50.51, z: 0 });
-                    //BAZINGA vid.setAttribute("position", { x: 8.581, y: 0, z: -.239 });
-                    //BAZINGA vid.setAttribute("rotation", { x: 0, y: 90, z:0 });
 
                     room.setAttribute("src", "#studio2");
                     room.emit("fadeback");
@@ -479,15 +464,13 @@ todo:
               var el = this.el;
               var link1 = document.getElementById("to-sidelab1");
               var link2 = document.getElementById("to-wetlab2");
-              //BAZINGA vid. = document.getElementById("wetlabvid1-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
                   setTimeout(() => {
                     link1.setAttribute("position", defaultPos);
                     link2.setAttribute("position", defaultPos);
-                    //BAZINGA vid.setAttribute("position", defaultPos);
-                  }, fadedelay);
+                   }, fadedelay);
               });
             }
           });
@@ -497,7 +480,6 @@ todo:
               var el = this.el;
               var link1 = document.getElementById("to-wetlab2");
               var link2 = document.getElementById("to-sidelab1");
-              //BAZINGA vid. = document.getElementById("wetlabvid1-ping");
 
               var room = document.getElementById("room");
 
@@ -510,8 +492,6 @@ todo:
                   link1.setAttribute("rotation", { x: -90, y: 59.5, z: 0 });
                   link2.setAttribute("position", { x: 2.556, y: -5.92, z: -7.056 });
                   link2.setAttribute("rotation", { x: -90, y: -25.5, z: 0 });
-                  //BAZINGA vid.setAttribute("position", { x: -7.56, y: -0.9, z: -5.603 });
-                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: 53.75, z:0 });
                   room.setAttribute("src", "#wetlab1");
                 }, fadedelay);
               });
@@ -522,13 +502,11 @@ todo:
             init: function() {
               var el = this.el;
               var link1 = document.getElementById("to-wetlab1");
-              //BAZINGA vid. = document.getElementById("wetlabvid2-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
                   setTimeout(() => {
                     link1.setAttribute("position", defaultPos);
-                    //BAZINGA vid.setAttribute("position", defaultPos);
                   }, fadedelay);
               });
             }
@@ -548,8 +526,6 @@ todo:
                   room.emit("fadeback");
                   link1.setAttribute("position", { x: -1.778, y: -5.95, z: -7.166 });
                   link1.setAttribute("rotation", { x: -90, y: 104.3, z: 0 });
-                  //BAZINGA vid.setAttribute("position", { x: 9.557, y: -1.57, z: .57 });
-                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: -93.1, z:0 });
                   room.setAttribute("src", "#wetlab2");
                 }, fadedelay);
               });
@@ -562,8 +538,7 @@ todo:
               var link1 = document.getElementById("to-sidelab2");
               var link2 = document.getElementById("to-studio3");
               var link3 = document.getElementById("to-wetlab1");
-              //BAZINGA vid. = document.getElementById("sidelabvid-ping");
-
+ 
               // Add event listeners here.
               el.addEventListener("click", function() {
                   setTimeout(() => {
@@ -596,8 +571,6 @@ todo:
                   link2.setAttribute("rotation", { x: -90, y: 126.5, z: 0 });
                   link3.setAttribute("position", { x: 8.078, y: -2.84, z: -4.047 });
                   link3.setAttribute("rotation", { x: -90, y: -39.568, z: 0 });
-                  //BAZINGA vid.setAttribute("position", { x: -4.36, y: -.67, z: -8.12 });
-                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: 29.19, z:0 });
                   room.setAttribute("src", "#sidelab1");
                 }, fadedelay);
               });
@@ -897,16 +870,12 @@ todo:
               var crest = document.getElementById("crest");
               var circle = document.getElementById("circle");
               var link1 = document.getElementById("to-hall5");
-              //BAZINGA vid.1 = document.getElementById("electronicslabvid1-ping");
-              //BAZINGA vid.2 = document.getElementById("electronicslabvid2-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
                   setTimeout(() => {
                     link1.setAttribute("position", defaultPos);
-                    //BAZINGA vid1.setAttribute("position", defaultPos);
-                    //BAZINGA vid2.setAttribute("position", defaultPos);
-                  }, fadedelay);
+                   }, fadedelay);
                   
                   crest.setAttribute("scale", {x: 1, y:1});
                   circle.setAttribute("position", {x:0, y:-9.5});
@@ -921,8 +890,6 @@ todo:
               var crest = document.getElementById("crest");
               var circle = document.getElementById("circle");
               var room = document.getElementById("room");
-              //BAZINGA vid.1 = document.getElementById("electronicslabvid1-ping");
-              //BAZINGA vid.2 = document.getElementById("electronicslabvid2-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
@@ -933,10 +900,6 @@ todo:
                   link1.setAttribute("rotation", { x: -90 , y: 98.22, z: 0});
                   crest.setAttribute("scale", {x: .55, y:.55});
                   circle.setAttribute("position", {x:0, y:-9.86});
-                  //BAZINGA vid1.setAttribute("position", { x: .227, y: -.64, z: 9.631 });
-                  //BAZINGA vid1.setAttribute("rotation", { x: 0, y: 181.8, z:0 });
-                  //BAZINGA vid2.setAttribute("position", { x: 2.513, y: -.54, z: 8.751 });
-                  //BAZINGA vid2.setAttribute("rotation", { x: 0, y: -164.268, z:0 });
 
                   room.setAttribute("src", "#electronicslab");
                 }, fadedelay);
@@ -989,14 +952,12 @@ todo:
               var el = this.el;
               var link1 = document.getElementById("to-printlab1");
               var link2 = document.getElementById("to-hall3");
-              //BAZINGA vid. = document.getElementById("printvid-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
                   setTimeout(() => {
                     link1.setAttribute("position", defaultPos);
                     link2.setAttribute("position", defaultPos);
-                    //BAZINGA vid.setAttribute("position", defaultPos);
                   }, fadedelay);
               });
             }
@@ -1007,7 +968,6 @@ todo:
               var el = this.el;
               var link1 = document.getElementById("to-printlab1");
               var link2 = document.getElementById("to-hall3");
-              //BAZINGA vid. = document.getElementById("printvid-ping");
               var room = document.getElementById("room");
 
               // Add event listeners here.
@@ -1020,8 +980,6 @@ todo:
                   link1.setAttribute("rotation", { x: -90, y: -53.1 });
                   link2.setAttribute("position", { x: 6.432, y: -5.9, z: -3.354 });
                   link2.setAttribute("rotation", { x: -90, y: -53.1 });
-                  //BAZINGA vid.setAttribute("position", { x: 1.803, y: -1.06, z: -9.662 });
-                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: -9.29, z:0 });
                   room.setAttribute("src", "#printlab2");
                 }, fadedelay);
               });
@@ -1068,13 +1026,11 @@ todo:
             init: function() {
               var el = this.el;
               var link1 = document.getElementById("to-hall2");
-              //BAZINGA vid. = document.getElementById("mediavid-ping");
               
               // Add event listeners here.
               el.addEventListener("click", function() {
                   setTimeout(() => {
                     link1.setAttribute("position", defaultPos);
-                    //BAZINGA vid.setAttribute("position", defaultPos);
                   }, fadedelay);
               });
             }
@@ -1085,7 +1041,6 @@ todo:
               var el = this.el;
               var link1 = document.getElementById("to-hall2");
               var room = document.getElementById("room");
-              //BAZINGA vid. = document.getElementById("mediavid-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
@@ -1095,8 +1050,6 @@ todo:
                   room.emit("fadeback");
                   link1.setAttribute("position", { x: -0.874, y: -5.407, z: 7.398 });
                   link1.setAttribute("rotation", { x: -90, y: -165.562 });
-                  //BAZINGA vid.setAttribute("position", { x: 9.186, y: .724, z: -3.518 });
-                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: -68.8, z:0 });
                   
                   room.setAttribute("src", "#mediaroom");
                 }, fadedelay);
@@ -1108,13 +1061,11 @@ todo:
             init: function() {
               var el = this.el;
               var link1 = document.getElementById("to-hall3");
-              //BAZINGA vid. = document.getElementById("textilevid-ping");
 
               // Add event listeners here.
               el.addEventListener("click", function() {
                   setTimeout(() => {
                     link1.setAttribute("position", defaultPos);
-                    //BAZINGA vid.setAttribute("position", defaultPos);
                   }, fadedelay);
               });
             }
@@ -1124,7 +1075,6 @@ todo:
             init: function() {
               var el = this.el;
               var link1 = document.getElementById("to-hall3");
-              //BAZINGA vid. = document.getElementById("textilevid-ping");
               var room = document.getElementById("room");
 
               // Add event listeners here.
@@ -1135,8 +1085,6 @@ todo:
                   room.emit("fadeback");
                   link1.setAttribute("position", { x: 2.251, y: -5.336, z: -7.019 });
                   link1.setAttribute("rotation", { x: -90, y: -3.251 });
-                  //BAZINGA vid.setAttribute("position", { x: -9.45, y: -.553, z: .996 });
-                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: 96.11, z:0 });
                   room.setAttribute("src", "#textilelab");
                 }, fadedelay);
               });
@@ -1256,7 +1204,6 @@ todo:
                   room.emit("fadeback");
                   link1.setAttribute("position", { x: 3.643, y: -4.13, z: -7.69 });
                   link1.setAttribute("rotation", { x: -90, y: -17.7, z: 0 });
-
                   room.setAttribute("src", "#meeting2");
                 }, fadedelay);
               });
@@ -1290,7 +1237,6 @@ todo:
               var link1 = document.getElementById("to-hall5");
               var link2 = document.getElementById("to-shop2");
               var link3 = document.getElementById("to-shop3");
-              //BAZINGA vid. = document.getElementById("shopvid-ping");
               var room = document.getElementById("room");
 
               // Add event listeners here.
@@ -1305,8 +1251,6 @@ todo:
                   link2.setAttribute("rotation", { x: -90, y: 103.7 });
                   link3.setAttribute("position", { x: 0.684, y: -2.51, z: 9.123 });
                   link3.setAttribute("rotation", { x: -90, y: 86.68 });
-                  //BAZINGA vid.setAttribute("position", { x: -9.64, y: 0, z: .263 });
-                  //BAZINGA vid.setAttribute("rotation", { x: 0, y: 90, z:0});
                   room.setAttribute("src", "#shop1");
                 }, fadedelay);
               });
@@ -1672,19 +1616,6 @@ todo:
               var printlab1 = document.getElementById("to-printlab1");
               var printlab2 = document.getElementById("to-printlab2");
               
-              //BAZINGA var frontvid = document.getElementById("frontvid-ping");
-              //BAZINGA var printvid = document.getElementById("printvid-ping");
-              //BAZINGA var droneoutvid = document.getElementById("droneoutvid-ping");
-              //BAZINGA var shopvid = document.getElementById("shopvid-ping");
-              //BAZINGA var mediavid = document.getElementById("mediavid-ping");
-              //BAZINGA var studiovid = document.getElementById("studiovid-ping");
-              //BAZINGA var sidelabvid = document.getElementById("sidelabvid-ping");
-              //BAZINGA var wetlabvid1 = document.getElementById("wetlabvid1-ping");
-              //BAZINGA var wetlabvid2 = document.getElementById("wetlabvid2-ping");
-              //BAZINGA var textilevid = document.getElementById("textilevid-ping");
-              //BAZINGA var electronicslabvid1 = document.getElementById("electronicslabvid1-ping");
-              //BAZINGA var electronicslabvid2 = document.getElementById("electronicslabvid2-ping");
-              
               el.addEventListener("click", function(){
                 if(introRemoved){
                 front.emit("fade");
@@ -1715,19 +1646,6 @@ todo:
                 printlab1.emit("fade");
                 printlab2.emit("fade");
                                 
-                //BAZINGA front vid.emit("fade");
-                //BAZINGA print vid.emit("fade");
-                //BAZINGA droneout vid.emit("fade");
-                //BAZINGA shop vid.emit("fade");
-                //BAZINGA media vid.emit("fade");
-                //BAZINGA studio vid.emit("fade");
-                //BAZINGA sidelab vid.emit("fade");
-                //BAZINGA wetlab vid1.emit("fade");
-                //BAZINGA wetlab vid2.emit("fade");
-                //BAZINGA textile vid.emit("fade");
-                //BAZINGA electronicslab vid1.emit("fade");
-                //BAZINGA electronicslab vid2.emit("fade");
-                
                 setTimeout(() => {
                   front.emit("fadeback");
                   dronein.emit("fadeback");
@@ -1756,19 +1674,6 @@ todo:
                   mediaroom.emit("fadeback");
                   printlab1.emit("fadeback");
                   printlab2.emit("fadeback");
-                  
-                  //BAZINGA front vid.emit("fadeback");
-                  //BAZINGA print vid.emit("fadeback");
-                  //BAZINGA droneout vid.emit("fadeback");
-                  //BAZINGA shop vid.emit("fadeback");
-                  //BAZINGA media vid.emit("fadeback");
-                  //BAZINGA studio vid.emit("fadeback");
-                  //BAZINGA sidelab vid.emit("fadeback");
-                  //BAZINGA wetlab vid1.emit("fadeback");
-                  //BAZINGA wetlab vid2.emit("fadeback");
-                  //BAZINGA textile vid.emit("fadeback");
-                  //BAZINGA electronicslab vid1.emit("fadeback");
-                  //BAZINGA electronicslab vid2.emit("fadeback");
                 }, fadedelay);
                 }
               });
@@ -1786,23 +1691,6 @@ todo:
           }
         });
           
-        AFRAME.registerComponent("startclick", {
-          init: function() {
-            var el = this.el;
-            var start = document.getElementById("start");
-            var instructions = document.getElementById("instructions");
-            var studio = document.getElementById("to-studio2");
-            
-            el.addEventListener("click", function(){
-              start.emit("btnclick");
-              instructions.emit("btnclick");
-              studio.setAttribute("position", { x: 1.134, y: -2.97, z: 8.977 });
-              studio.setAttribute("rotation", { x: -90, y: 110.2, z: 0 });
-              introRemoved = true;
-              
-            });
-          }
-        });
         </script>
       </a-assets>
 
@@ -1837,20 +1725,7 @@ todo:
 
       <!-- start room and floor-->
       <!-- links should be placed inside the sky entity so that they are positioned relative to the rotation of the room (and thus the image on the room)--> 
-        <a-image id="instructions"
-                 src="#intro"
-                 position="5.321 0 1.237"
-                 rotation="0 -103 0"
-                 scale="12.3 6.3 1"
-                 animation__disappear="property:material.opacity; to:0; dur:1; startEvents:btnclick;"
-                 animation__move="property:position; to: 0 -30 0; dur:1; startEvents:btnclick">          
-          <a-image id="start"
-                   src="#startbtn"
-                   position="0 -.33 .1"
-                   scale=".21 .139 1"
-                   animation__disappear="property:material.opacity; to:0; dur:1; startEvents:btnclick;"
-                   startclick></a-image>
-        </a-image>
+
       <a-sky
         id="room"
         src="#front"
@@ -1859,6 +1734,7 @@ todo:
         animation__fade="property: components.material.material.color; type: color; from: #FFF; to: #000; dur: 300; startEvents: fade "
         animation__fadeback="property: components.material.material.color; type: color; from: #000; to: #FFF; dur: 300; startEvents: fadeback"
       ><!-- cursorclick -->
+
         <!-- room links -->
         <a-image
           id="to-front"
@@ -1872,17 +1748,7 @@ todo:
           faderoommarkers
           animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
           animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-        ></a-image>
-        
-        <!-- BAZINGA<a-image
-          id="frontvid-ping"
-          src="#ping"
-          position="-9.58 0 2.214"
-          rotation="0 96.8 0"
-          to-frontvid
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
+        startclick></a-image>
 
         <a-image
           id="to-droneout"
@@ -1897,17 +1763,6 @@ todo:
           animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
         ></a-image>
 
-        <!-- change base position-->
-        <!--BAZINGA <a-image
-          id="droneoutvid-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-droneoutvid
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
-        
         <a-image
           id="to-dronein"
           src="#moveArrow"
@@ -1954,16 +1809,6 @@ todo:
         >
         </a-image>
         
-        <!--BAZINGA <a-image
-          id="studiovid-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-studiovid
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
-
         <a-image
           id="to-studio3"
           src="#moveArrow"
@@ -2039,16 +1884,6 @@ todo:
         >
         </a-image>
         
-        <!--BAZINGA <a-image
-          id="wetlabvid1-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-wetlabvid1
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
-
         <a-image
           id="to-wetlab2"
           src="#moveArrow"
@@ -2062,16 +1897,6 @@ todo:
           animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
         ></a-image>
         
-        <!--BAZINGA <a-image
-          id="wetlabvid2-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-wetlabvid2
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
-
         <a-image
           id="to-sidelab1"
           src="#moveArrow"
@@ -2102,15 +1927,6 @@ todo:
           animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
         ></a-image>
         
-        <!--BAZINGA <a-image
-          id="sidelabvid-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-sidelabvid
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
 
         <a-image
           id="to-hall1"
@@ -2210,26 +2026,6 @@ todo:
           animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
         >
         </a-image>
-        
-        <!--BAZINGA <a-image
-          id="electronicslabvid1-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-electronicslabvid1
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
-        
-        <!--BAZINGA <a-image
-          id="electronicslabvid2-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-electronicslabvid2
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
 
         <a-image
           id="to-storage"
@@ -2256,16 +2052,6 @@ todo:
           animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
           animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
         ></a-image>
-        
-        <!--BAZINGA <a-image
-          id="mediavid-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-mediavid
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
 
         <a-image
           id="to-textilelab"
@@ -2279,16 +2065,6 @@ todo:
           animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
           animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
         ></a-image>
-
-        <!--BAZINGA <a-image
-          id="textilevid-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-textilevid
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
         
         <a-sphere 
           id="egg" 
@@ -2340,17 +2116,6 @@ todo:
           animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
         ></a-image>
 
-        <!--BAZINGA <a-image
-          id="printvid-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-printvid
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
-        
-
         <a-image
           id="to-shop1"
           src="#moveArrow"
@@ -2366,22 +2131,13 @@ todo:
           animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
         ></a-image>
 
-        <!--BAZINGA <a-image
-          id="shopvid-ping"
-          src="#ping"
-          position="0 -15 0"
-          rotation="0 90 0"
-          to-shopvid
-          animation__fade="property: material.opacity; from: 1; to: 0; dur: 300; startEvents: fade"
-          animation__fadeback="property: material.opacity;  from: 0; to: 1; dur: 300; startEvents: fadeback"
-          ></a-image> -->
-        
         <a-entity 
           id="hi" 
-          text="value: Hi, I'm Kevin, I coded this tour!;" 
-          position="0 -15 0" 
+          text="value: Hi, I'm Kevin, I did not hide my easter 
+		  egg well enough;" 
+          position="-10 -15 0" 
           rotation="-66.2 -84.2 -1" 
-          scale="-10 10 10"></a-entity><!-- -->
+          scale="-5 5 5"></a-entity><!-- -->
         <a-image
           id="to-shop2"
           src="#moveArrow"
